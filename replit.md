@@ -1,26 +1,33 @@
-# WebToApp
+# Web to APK Converter
 
-This project is a native **Android application** built with Kotlin and Jetpack Compose (Gradle build system). It converts websites, media, and HTML into standalone Android APKs.
+Next.js 14 (App Router) + Tailwind CSS web app deployable on Vercel. Replaces the
+previous native Android project.
 
 ## Replit Setup
 
-Because this is an Android project (not a web app), it cannot truly "run" inside Replit's web preview. To give the Replit preview pane something useful to display, a small static landing page in `site/` is served on port 5000 via Python's built-in HTTP server. It shows the project description and the screenshots from `png/`.
+- **Workflow**: `Start application` → `npm run dev` (binds to `0.0.0.0:5000`).
+- **Deployment**: Vercel (auto-detected). Replit's deployment also works (autoscale, `npm run build` → `npm run start`).
 
-### Workflow
-- **Start application**: `python3 -m http.server 5000 --bind 0.0.0.0 --directory site`
+## Project Layout
 
-### Building the actual Android APK
-Requires the Android SDK (not installed here). On a machine with the SDK:
+- `app/page.tsx` — landing page
+- `app/layout.tsx` — root layout
+- `app/globals.css` — Tailwind directives + theme
+- `app/api/generate/route.ts` — POST endpoint, returns demo JSON
+- `components/ConverterForm.tsx` — client form with success/download UI
+- `public/` — static assets
+- `tailwind.config.ts`, `postcss.config.mjs`, `tsconfig.json`, `next.config.mjs`
 
+## Scripts
+
+```bash
+npm run dev    # local dev on http://localhost:5000
+npm run build  # production build
+npm run start  # serve production build
 ```
-./gradlew assembleDebug
-```
 
-APK output: `app/build/outputs/apk/`
+## API
 
-## Project layout
-- `app/` — Android app module (Kotlin sources, resources, manifests)
-- `build.gradle.kts`, `settings.gradle.kts`, `gradle.properties` — Gradle config
-- `png/` — README screenshots
-- `site/` — Static preview page served in Replit
-- `tools/` — Utility scripts (e.g. i18n catalog export)
+`POST /api/generate` — body: `{ url, appName, packageName? }`. Returns JSON with
+`success`, `appName`, `url`, `packageName`, `size`, `generatedAt`, `downloadUrl`.
+Demo only — does not actually compile an APK.
