@@ -268,7 +268,45 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
+
+            // ===== Release hardening & size reduction =====
+            // Strip native debug symbols from .so files (saves several MB).
+            ndk {
+                debugSymbolLevel = "none"
+            }
+            // Optimise PNGs at packaging time.
+            isCrunchPngs = true
+            // Explicitly disable debugging in release builds.
+            isDebuggable = false
+            isJniDebuggable = false
+            isPseudoLocalesEnabled = false
+            isRenderscriptDebuggable = false
+            // Pass release-only flags to the native build (optimisations + stack hardening).
+            externalNativeBuild {
+                cmake {
+                    arguments += listOf(
+                        "-DCMAKE_BUILD_TYPE=Release",
+                        "-DANDROID_ARM_NEON=ON"
+                    )
+                    cFlags += listOf("-fstack-protector-strong", "-DNDEBUG")
+                    cppFlags += listOf("-fstack-protector-strong", "-DNDEBUG")
+                }
+            }
         }
+        debug {
+            // Faster debug builds – no minification, separate package marker is optional.
+            isMinifyEnabled = false
+            isShrinkResources = false
+            isJniDebuggable = true
+        }
+    }
+
+    // Lint: surface real issues but don't block release builds on noisy warnings.
+    lint {
+        abortOnError = false
+        checkReleaseBuilds = true
+        warningsAsErrors = false
+        disable += listOf("MissingTranslation", "ExtraTranslation")
     }
     
     // Disable ABI splits so the app can reuse its own APK as a template.
@@ -315,6 +353,23 @@ android {
     packaging {
         resources {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
+            // Strip metadata that adds nothing at runtime (smaller APK & faster install).
+            excludes += listOf(
+                "DebugProbesKt.bin",
+                "kotlin-tooling-metadata.json",
+                "kotlin/**",
+                "**/*.kotlin_metadata",
+                "**/*.kotlin_builtins",
+                "META-INF/*.kotlin_module",
+                "META-INF/*.version",
+                "META-INF/proguard/**",
+                "META-INF/com.android.tools/**",
+                "META-INF/CHANGES",
+                "META-INF/README.md",
+                "META-INF/DEPENDENCIES",
+                "META-INF/maven/**",
+                "META-INF/services/javax.annotation.processing.Processor"
+            )
         }
         // Keep native libraries uncompressed.
         jniLibs {

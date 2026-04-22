@@ -13,6 +13,20 @@ function(enable_16kb_page_support target_name)
     target_link_options(${target_name} PRIVATE "-Wl,-z,max-page-size=16384")
 endfunction()
 
+# ===== Global hardening & link-time optimisation =====
+# 这些标志对所有后续定义的目标生效（target_compile_options 是叠加的）。
+# - LTO (Link-Time Optimization): 跨翻译单元内联与死代码消除，显著减小 .so 体积并提升性能
+# - stack-protector-strong: 缓冲区溢出运行时检测（极小开销，强化安全）
+# - fno-unwind-tables / fno-asynchronous-unwind-tables: 移除非必要的栈展开表，进一步瘦身
+# 注意：crypto 模块单独保留 -O2（避免 -O3 影响恒定时间属性），但 LTO 仍安全适用。
+add_compile_options(
+    -flto=thin
+    -fstack-protector-strong
+    -fno-unwind-tables
+    -fno-asynchronous-unwind-tables
+)
+add_link_options(-flto=thin)
+
 # 添加编译选项（crypto_engine 专用）
 # 注意：不使用全局 add_compile_options，因为 node_bridge 需要导出 JNI 符号
 
@@ -64,7 +78,7 @@ target_link_libraries(
 
 # crypto_engine 可以 strip 所有符号
 set_target_properties(crypto_engine PROPERTIES
-    LINK_FLAGS "-Wl,--gc-sections -Wl,--strip-all"
+    LINK_FLAGS "-Wl,--gc-sections -Wl,--strip-all -flto=thin"
 )
 
 # ==================== Optimized Crypto (优化版加密引擎) ====================
@@ -95,7 +109,7 @@ target_link_libraries(
 )
 
 set_target_properties(crypto_optimized PROPERTIES
-    LINK_FLAGS "-Wl,--gc-sections -Wl,--strip-all"
+    LINK_FLAGS "-Wl,--gc-sections -Wl,--strip-all -flto=thin"
 )
 
 
@@ -114,7 +128,7 @@ target_compile_options(node_bridge PRIVATE
 
 # node_bridge 只 gc-sections，不 strip（保留 JNI 导出符号）
 set_target_properties(node_bridge PROPERTIES
-    LINK_FLAGS "-Wl,--gc-sections"
+    LINK_FLAGS "-Wl,--gc-sections -flto=thin"
 )
 
 # ==================== Hardware Control (黑科技底层控制) ====================
@@ -148,7 +162,7 @@ target_link_libraries(
 
 # 只 gc-sections，保留 JNI 导出符号
 set_target_properties(hardware_control PROPERTIES
-    LINK_FLAGS "-Wl,--gc-sections"
+    LINK_FLAGS "-Wl,--gc-sections -flto=thin"
 )
 
 # ==================== APK Optimizer (APK 体积优化引擎) ====================
@@ -218,7 +232,7 @@ target_link_libraries(
 )
 
 set_target_properties(perf_engine PROPERTIES
-    LINK_FLAGS "-Wl,--gc-sections -Wl,--strip-all"
+    LINK_FLAGS "-Wl,--gc-sections -Wl,--strip-all -flto=thin"
 )
 
 # ==================== System Optimizer (系统层极致性能优化) ====================
@@ -249,7 +263,7 @@ target_link_libraries(
 )
 
 set_target_properties(sys_optimizer PROPERTIES
-    LINK_FLAGS "-Wl,--gc-sections -Wl,--strip-all"
+    LINK_FLAGS "-Wl,--gc-sections -Wl,--strip-all -flto=thin"
 )
 
 # ==================== Browser Kernel (浏览器内核伪装引擎) ====================
@@ -280,5 +294,5 @@ target_link_libraries(
 )
 
 set_target_properties(browser_kernel PROPERTIES
-    LINK_FLAGS "-Wl,--gc-sections -Wl,--strip-all"
+    LINK_FLAGS "-Wl,--gc-sections -Wl,--strip-all -flto=thin"
 )
