@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>WebToApp — Android Project</title>
+<style>
+  :root { color-scheme: dark; }
+  body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    margin: 0; background: #0f1115; color: #e6e6e6; line-height: 1.55; }
+  header { padding: 48px 24px; text-align: center;
+    background: linear-gradient(135deg, #1a2a4a 0%, #0f1115 100%); }
+  header h1 { margin: 0 0 8px; font-size: 2.4rem; }
+  header p { margin: 6px 0; color: #b8c2d1; }
+  .badge { display: inline-block; padding: 4px 10px; margin: 4px;
+    background: #1f2733; border-radius: 14px; font-size: .8rem; color: #9ecbff; }
+  main { max-width: 1100px; margin: 0 auto; padding: 32px 24px; }
+  .notice { background: #2a2010; border: 1px solid #6b5320; padding: 16px 20px;
+    border-radius: 10px; margin-bottom: 32px; }
+  h2 { margin-top: 40px; border-bottom: 1px solid #2a3140; padding-bottom: 8px; }
+  .grid { display: grid; gap: 16px;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); }
+  .grid img { width: 100%; border-radius: 12px; background: #1a1d24;
+    border: 1px solid #2a3140; }
+  code, pre { background: #1a1d24; border-radius: 6px; }
+  code { padding: 2px 6px; font-size: .9em; }
+  pre { padding: 14px 16px; overflow-x: auto; }
+  a { color: #79b8ff; }
+  footer { text-align: center; padding: 32px; color: #6c7a8e; font-size: .85rem; }
+</style>
+</head>
+<body>
+<header>
+  <h1>WebToApp</h1>
+  <p>Transform Websites into Android Apps in Seconds</p>
+  <div>
+    <span class="badge">Android 6.0+</span>
+    <span class="badge">Kotlin</span>
+    <span class="badge">Jetpack Compose</span>
+    <span class="badge">Material 3</span>
+  </div>
+</header>
+<main>
+  <div class="notice">
+    <strong>Heads up:</strong> This repository is a native <em>Android application</em>
+    (Kotlin + Jetpack Compose, built with Gradle). It produces an APK and is meant to
+    run on an Android device — it has no web frontend or backend. This page is a
+    project preview so you can see what the project is about inside Replit.
+  </div>
+
+  <h2>About</h2>
+  <p>WebToApp lets you wrap any website, media, or HTML bundle into a standalone
+  Android app — no Android Studio required. The full feature list, screenshots,
+  and instructions are in the project's <a href="https://github.com/shiahonb777/web-to-app">README</a>.</p>
+
+  <h2>Screenshots</h2>
+  <div class="grid">
+    <img src="1.png" alt="screenshot 1"/>
+    <img src="2.png" alt="screenshot 2"/>
+    <img src="3.png" alt="screenshot 3"/>
+    <img src="4.png" alt="screenshot 4"/>
+    <img src="5.png" alt="screenshot 5"/>
+    <img src="6.png" alt="screenshot 6"/>
+    <img src="7.png" alt="screenshot 7"/>
+    <img src="8.png" alt="screenshot 8"/>
+    <img src="9.png" alt="screenshot 9"/>
+    <img src="10.png" alt="screenshot 10"/>
+  </div>
+
+  <h2>Building the APK</h2>
+  <p>Building requires the Android SDK, which isn't installed in this Replit
+  environment by default. To build locally:</p>
+  <pre>./gradlew assembleDebug</pre>
+  <p>The output APK will be placed under <code>app/build/outputs/apk/</code>.</p>
+</main>
+<footer>WebToApp · Android · Kotlin · Jetpack Compose</footer>
+</body>
+</html>
